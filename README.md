@@ -8,6 +8,8 @@ Interactive slides explaining the architecture in DeepSeek Harness's “Explorin
 
 - `public/index.html` — the deck shell: styles, navigation, notes, and overview.
 - `public/slides/` — one HTML file per slide, named `topic-NN.html`. The order is listed in `slideFiles` inside `index.html`.
+- `public/assets/theme.css` — the DeepSeek palette and all shared color/type tokens. Change colors here, not in `index.html`.
+- `public/assets/deepseek-logo.svg` — the DeepSeek logo used on the opening slide (trademark of DeepSeek; used here to identify the subject).
 - `.github/workflows/pages.yml` — publishes `public/` to GitHub Pages on every push to `master`.
 
 Each slide file is a fragment: a `.slide-data` section holding the kicker, title, body markup, and speaker notes. The shell fetches the files and renders the active one.

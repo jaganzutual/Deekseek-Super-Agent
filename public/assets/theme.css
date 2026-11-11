@@ -1,0 +1,53 @@
+/* DeepSeek theme tokens — edit colors here, not in index.html. */
+
+:root {
+  /* DeepSeek brand */
+  --ds-blue: #4D6BFE;
+  --ds-blue-deep: #2C43C7;
+  --ds-blue-soft: #E9EEFF;
+  --ds-blue-mid: #A9BBEA;
+  --ds-sky: #CFE0FF;
+  --ds-sky-soft: #E3ECFF;
+
+  /* Neutrals */
+  --ds-bg: #F4F7FF;
+  --ds-page: #E7ECF7;
+  --ds-surface: #FFFFFF;
+  --ds-ink: #0B1533;
+  --ds-body: #3C4661;
+  --ds-muted: #5A6478;
+  --ds-border: #D9E1F5;
+  --ds-shadow: #0B15331F;
+
+  /* Background glow and dot texture */
+  --ds-glow-1: #4D6BFE1A;
+  --ds-glow-2: #8FB0FF2E;
+  --ds-dot: #9FB0D6;
+
+  /* Deck tokens consumed by index.html */
+  --bg: var(--ds-bg);
+  --surface: var(--ds-surface);
+  --accent: var(--ds-blue-soft);
+  --sage: var(--ds-sky);
+  --ink: var(--ds-ink);
+  --muted: var(--ds-muted);
+  --line: var(--ds-border);
+  --light: var(--ds-blue-soft);
+
+  --theme-bg: var(--ds-bg);
+  --theme-surface: var(--ds-surface);
+  --theme-main: var(--ds-blue);
+  --theme-secondary: var(--ds-sky);
+  --theme-ink: var(--ds-ink);
+  --theme-detail: var(--ds-blue-deep);
+  --theme-border: var(--ds-border);
+  --theme-glow1: var(--ds-glow-1);
+  --theme-glow2: var(--ds-glow-2);
+  --theme-dot: var(--ds-dot);
+  --theme-panel: var(--ds-blue-soft);
+
+  /* Type */
+  --sans: 'Inter', Arial, sans-serif;
+  --serif: 'Libre Baskerville', Georgia, serif;
+  --mono: 'DM Mono', monospace;
+}
