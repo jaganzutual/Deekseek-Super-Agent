@@ -32,44 +32,98 @@
 .nav button.current,.controls button,.box,.archbox,.rows,.tile,.body.columns>.frag{background:var(--theme-surface);border-color:var(--theme-border)}
 .box.accent,.archbox.peach,.tag,.nav button.current{background:var(--theme-panel);border-color:var(--theme-border)}.archbox.sage{background:var(--theme-secondary)}.orb{background:var(--theme-main)}.orb:before{background:var(--theme-surface)}.orb:after{background:var(--theme-secondary)}
 @media(max-width:700px){.controls{gap:4px;width:calc(100% - 16px);justify-content:center;flex-wrap:wrap}.controls button{padding:7px 8px}}
-</style></head><body><main id="stage"><div id="slides"></div><div class="controls"><button id="prev" aria-label="Previous step">← Back</button><button id="next" aria-label="Next step">Next →</button><button id="overview-btn">Overview</button><button id="notes-btn">Notes</button><button id="fullscreen-btn">Full screen</button></div><div id="notes" class="notes" hidden></div><div id="overview" class="overview" hidden><h2>Explore the deck</h2><button class="close-over" id="close-over">Close</button><div class="overview-grid" id="overview-grid"></div></div></main>
+.loading{font:18px var(--mono);color:var(--muted);text-align:center;padding-top:340px}
+.load-error{max-width:780px;margin:140px auto;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:30px 34px;font:18px/1.55 var(--sans);color:var(--ink)}
+.load-error h2{font:32px/1.2 var(--serif);margin:0 0 10px}
+.load-error code{font:14px var(--mono);background:var(--light);padding:3px 7px;border-radius:5px}
+@media(max-width:700px){.loading{padding-top:200px}.load-error{margin:90px 20px;padding:22px}}
+</style></head><body><main id="stage"><div id="slides"><p class="loading">Loading slides…</p></div><div class="controls"><button id="prev" aria-label="Previous step">← Back</button><button id="next" aria-label="Next step">Next →</button><button id="overview-btn">Overview</button><button id="notes-btn">Notes</button><button id="fullscreen-btn">Full screen</button></div><div id="notes" class="notes" hidden></div><div id="overview" class="overview" hidden><h2>Explore the deck</h2><button class="close-over" id="close-over">Close</button><div class="overview-grid" id="overview-grid"></div></div></main>
 <script>
 const sections=['Start','Design','Context','Running','Next'];
-const slides=[
-{section:'Start',kicker:'A guided introduction',title:'DeepSeek Super Agent',kind:'hero',html:`<div class="hero"><div><div class="eyebrow">An architecture for autonomous work</div><h1>DeepSeek<br>Super <em>Agent.</em></h1><p class="lead">One continuous agent. Many tasks, conversations, and environments.</p></div><div class="art"><div class="orb"></div></div></div>`,notes:'Introduce the paper as a set of architectural ideas, not a claim that every feature is already available. Start with the problem: keeping track of many sessions.'},
-{section:'Start',kicker:'The journey',title:'A systems approach to agents',kind:'rows',items:[['The problem','Many sessions compete for human attention.'],['The design','A router coordinates isolated workers.'],['The memory','Events, threads, context, and recall.'],['The runtime','Asynchronous work, persistent state, and recovery.'],['The open questions','Security, scale, and user control.']],notes:'Set expectations: this deck explains concepts from the article, moving from the problem to the architecture and its limits.'},
-{section:'Start',kicker:'The problem',title:'Attention becomes the <em>constraint.</em>',kind:'columns',items:[['One person, many sessions','Every session needs context, instructions, and monitoring.'],['The authors’ observation','They estimate people can follow around three to five active sessions.'],['The goal','Let the system handle session coordination while people guide decisions.']],notes:'The 3–5 figure is the authors’ experience, not a universal scientific limit.'},
-{section:'Start',kicker:'The shift',title:'From sessions to <em>one continuous agent.</em>',kind:'flow',boxes:[['You','Give direction'],['Super Agent','Coordinates work'],['Tasks','Run independently']],notes:'The user interacts with one conceptual agent, while the system manages the sessions that execute tasks.'},
-{section:'Start',kicker:'Four characteristics',title:'What should a Super Agent do?',kind:'tiles',items:[['01','Continuous','Keep context across tasks and channels.'],['02','Productive','Work on several tasks while remaining responsive.'],['03','Proactive','Notice relevant events and act when appropriate.'],['04','Persistent','Stay available and recover from failures.']],notes:'These properties arise from the architecture around the model, not from one prompt alone.'},
-{section:'Design',kicker:'The whole design',title:'The architecture on <em>one page.</em>',kind:'architecture',notes:'Walk from channels to filtering, then the router and workers. Explain direct follow-up delivery, persistent state, execution environments, and the independent watchdog.'},
-{section:'Design',kicker:'Two levels',title:'One coordinator, many workers.',kind:'columns',items:[['Router','Maintains the global picture, talks to people, and dispatches tasks.'],['Workers','Each focuses on one task in an isolated context and reports its result.'],['Why split?','Continuity and parallel work no longer compete inside one task session.']],notes:'The article says the router does not execute tasks itself. It may still use coordination and recall tools.'},
-{section:'Design',kicker:'Router',title:'Keep the coordinator <em>light.</em>',kind:'flow',boxes:[['New event','Arrives'],['Router','Decides & delegates'],['Worker','Does the task']],notes:'The router is a coordination role. The paper uses a long-lived session but says the layer could have a different internal structure.'},
-{section:'Design',kicker:'Workers',title:'One task. One focused context.',kind:'tiles',items:[['01','Receive','The worker gets a task and relevant starting context.'],['02','Act','It uses tools and can perform longer operations.'],['03','Report','It sends useful conclusions back to the router.']],notes:'Workers are responsible for task execution. A worker could itself use subagents for a complex task.'},
-{section:'Design',kicker:'Triggers',title:'Events become the <em>input.</em>',kind:'flow',boxes:[['Message','A user asks'],['CI result','A test fails'],['Review','A comment arrives']],notes:'An event records something that happened. Not every event is an instruction or deserves action.'},
-{section:'Design',kicker:'Event filtering',title:'Let code handle the obvious.',kind:'columns',items:[['Fast path','Deterministic rules check sources, permissions, or allowlists.'],['Slow path','A model judges candidate events that need interpretation.'],['Outcome','Ignore noise, or pass an event onward for action.']],notes:'The paper proposes code-first filtering followed by semantic policies where judgment is needed.'},
-{section:'Design',kicker:'Subscriptions',title:'Follow-ups reach the right worker.',kind:'flow',boxes:[['First event','Router assigns task'],['Thread','Worker subscribes'],['Follow-up','Delivered directly']],notes:'The router can still observe events for continuity, but direct pass-through avoids a fresh forwarding decision. Subscriptions are many-to-many.'},
-{section:'Context',kicker:'Context as a cache',title:'Keep the window <em>useful.</em>',kind:'columns',items:[['Inline','Put likely-needed information directly in the model context.'],['Spill','Keep long or rarely needed material outside, with a reference.'],['Recall','Retrieve the full material when the task requires it.']],notes:'Spill does not mean deleting the original. The goal is to trade context space against extra retrieval calls.'},
-{section:'Context',kicker:'A concrete event',title:'Start small. Expand when needed.',kind:'rows',items:[['1 · Start','Give the event ID and a short summary.'],['2 · Add nearby context','Include a reply or related recent messages.'],['3 · Leave a reference','Long content stays available for later reading.']],notes:'This is a conceptual example of progressively inlining information by locality.'},
-{section:'Context',kicker:'Chain of Recall',title:'Follow the relationships.',kind:'flow',boxes:[['Message','Event ID'],['Thread','Related events'],['Worker','Task context'],['Pull request','Outcome']],notes:'Objects expose references to related objects. The router can follow those references across hops to recover context.'},
-{section:'Context',kicker:'An example',title:'“What happened to the login bug?”',kind:'rows',items:[['Start','A recent message points to an earlier task.'],['First hop','Read the worker summary and find its linked review.'],['Second hop','Read the review status and answer the user.']],notes:'Illustrative example: the paper does not guarantee that this particular bug or review exists.'},
-{section:'Context',kicker:'A limit',title:'Memory is still an <em>open problem.</em>',kind:'columns',items:[['Shorter term','A router and linked records can recover relevant task context.'],['Longer term','Months of accumulated work require better long-term memory.'],['Design question','What should be retained, summarized, linked, or forgotten?']],notes:'The paper explicitly identifies long-term memory as a scaling challenge.'},
-{section:'Running',kicker:'Full duplex',title:'A long job should not block a conversation.',kind:'flow',boxes:[['start()','Returns immediately'],['Keep talking','Accept new input'],['Result event','Arrives later']],notes:'New input is processed after the current inference step finishes, rather than waiting for the background operation.'},
-{section:'Running',kicker:'Channels',title:'Match the response to the place.',kind:'columns',items:[['Chat','Short, direct updates with minimal interruption.'],['Code review','A structured explanation of the problem, change, and verification.'],['One voice','Workers report to the router, which handles external communication.']],notes:'These are proposed interaction norms. The paper mentions a 100-word chat rule as one tested example.'},
-{section:'Running',kicker:'Persistence',title:'Separate compute, state, and tools.',kind:'flow',boxes:[['Agent loop','Runs decisions'],['State store','Keeps history'],['Environment','Runs tools']],notes:'Compute can restart independently while persistent state retains continuity; execution environments can live on other machines.'},
-{section:'Running',kicker:'Execution environments',title:'Work where the environment lives.',kind:'columns',items:[['Agent compute','Can run separately from the user’s machine.'],['Endpoint','A lightweight process executes permitted commands and returns results.'],['Trade-off','Remote access creates significant security and privacy challenges.']],notes:'The article discusses bringing your own machine and explicitly identifies the trust relationship between cloud and endpoints as a security risk.'},
-{section:'Running',kicker:'Watchdog',title:'Running is not the same as <em>progressing.</em>',kind:'tiles',items:[['01','Observe','Check the main system and its workers.'],['02','Investigate','Notice failures, stalled tasks, or repeated unproductive work.'],['03','Recover','Retry or intervene according to the system’s policies.']],notes:'The watchdog is an independent control loop. A simple liveness check cannot catch every kind of drift.'},
-{section:'Next',kicker:'The evidence',title:'Promising results, with limits.',kind:'columns',items:[['What was measured','Synthetic work tested scheduling and coordination across five runs.'],['Reported result','The Super Agent had a 12.4-minute median and 15.7-minute p95.'],['What it does not prove','The simulated coding tool did not measure real coding quality.']],notes:'The authors call the experiments preliminary and indicative. More concurrent sessions also used more cache-read tokens.'},
-{section:'Next',kicker:'Open questions',title:'What still needs to be solved?',kind:'tiles',items:[['01','Security','Untrusted events and connected machines create new risks.'],['02','Memory','Long-running agents need durable, useful context.'],['03','Coordination','Scaling, permissions, and human intervention need design.']],notes:'The paper identifies security and privacy, context boundaries, long-term memory, scaling, and user experience as open problems.'},
-{section:'Next',kicker:'Takeaway',title:'An agent is part of a <em>system.</em>',kind:'end',html:`<div class="big">A model reasons.<br><span class="tag">The system keeps work moving.</span></div><p class="lead">Start with a small, trusted use case. Add coordination, memory, and recovery as the need becomes clear.</p>`,notes:'Close by revisiting the four goals: continuous, productive, proactive, and persistent. Then discuss which narrow use case to explore first.'}
+const slideFiles=[
+'index-01.html',
+'journey-02.html',
+'problem-03.html',
+'shift-04.html',
+'characteristics-05.html',
+'architecture-06.html',
+'two-levels-07.html',
+'router-08.html',
+'workers-09.html',
+'triggers-10.html',
+'event-filtering-11.html',
+'subscriptions-12.html',
+'context-cache-13.html',
+'context-example-14.html',
+'chain-of-recall-15.html',
+'recall-example-16.html',
+'memory-limit-17.html',
+'full-duplex-18.html',
+'channels-19.html',
+'persistence-20.html',
+'environments-21.html',
+'watchdog-22.html',
+'evidence-23.html',
+'open-questions-24.html',
+'takeaway-25.html'
 ];
-let index=Math.max(0,Math.min(slides.length-1,(parseInt(location.hash.slice(1),10)||1)-1)),reveal=0;const $=id=>document.getElementById(id);const stage=$('stage');
-function fit(){if(innerWidth<=700){stage.style.transform='none';return}const s=Math.min(innerWidth/1600,innerHeight/900);stage.style.transform=`translate(${(innerWidth-1600*s)/2}px,${(innerHeight-900*s)/2}px) scale(${s})`};window.addEventListener('resize',fit);fit();
-function fragment(content){return `<div class="frag">${content}</div>`}
-function renderBody(s){if(s.kind==='hero'||s.kind==='end')return `<div class="body ${s.kind==='end'?'center':''}">${s.html}</div>`;if(s.kind==='rows')return `<div class="body vertical"><div class="rows">${s.items.map(([a,b])=>fragment(`<div class="row"><strong>${a}</strong><span>${b}</span></div>`)).join('')}</div></div>`;if(s.kind==='columns')return `<div class="body columns">${s.items.map(([a,b])=>fragment(`<div><p class="point"><strong>${a}.</strong><br>${b}</p></div>`)).join('')}</div>`;if(s.kind==='tiles')return `<div class="body"><div class="tile-grid" style="grid-template-columns:repeat(${s.items.length},1fr)">${s.items.map(([n,t,b])=>fragment(`<div class="tile"><div class="num">${n}</div><h3>${t}</h3><p>${b}</p></div>`)).join('')}</div></div>`;if(s.kind==='flow')return `<div class="body vertical"><div class="box-row">${s.boxes.map(([a,b],i)=>`${i?'<div class="arrow">→</div>':''}${fragment(`<div class="box ${i===1?'accent':''}">${a}<small>${b}</small></div>`)}`).join('')}</div></div>`;return `<div class="body vertical"><div class="architecture"><div class="stack"><div class="archbox">Chat</div><div class="archbox">GitHub</div><div class="archbox">Email & events</div></div><div class="archbox">Two-stage filter<small>rules, then model judgment</small></div><div class="archbox peach">Router<small>coordinates and communicates</small></div><div class="stack"><div class="archbox sage">Worker 1<small>isolated task</small></div><div class="archbox sage">Worker 2<small>isolated task</small></div><div class="archbox sage">Worker 3<small>isolated task</small></div></div></div><div class="arch-tail"><div class="archbox">Persistent state<small>sessions, tasks, events</small></div><div class="archbox">Execution environments<small>tools and machines</small></div><div class="archbox">Watchdog<small>health and progress</small></div></div><p class="point" style="font-size:19px;margin-top:18px">Subscribed follow-ups can go directly to workers; the router retains global awareness.</p></div>`}
-function show(i,r=0){index=Math.max(0,Math.min(slides.length-1,i));const s=slides[index];$('slides').innerHTML=`<section class="slide active ${['end','architecture'].includes(s.kind)?'serif-heading':''}"><header class="head"><span>${s.section}</span><nav class="nav" aria-label="Presentation sections">${sections.map(name=>`<button data-section="${name}" class="${name===s.section?'current':''}">${name}</button>`).join('')}</nav></header>${s.kind==='hero'?'':`<div class="eyebrow">${s.kicker}</div><h2 class="title">${s.title}</h2>`}${renderBody(s)}<footer class="foot"><a href="https://x.com/DeepSeekHarness/status/2116857257245987236" target="_blank" rel="noopener">DeepSeek Super Agent · Article</a><span>${index+1} / ${slides.length}</span></footer><div class="hint">← / → navigate · N notes · O overview · F full screen</div></section>`;let fs=[...document.querySelectorAll('.frag')];reveal=r==='end'?fs.length:Math.min(r,fs.length);fs.forEach((f,j)=>f.classList.toggle('revealed',j<reveal));$('prev').disabled=index===0&&reveal===0;$('next').disabled=index===slides.length-1&&reveal===fs.length;$('notes').innerHTML=`<b>${index+1} / ${slides.length}</b><p>${s.notes}</p>`;history.replaceState(null,'','#'+(index+1));document.querySelectorAll('[data-section]').forEach(b=>b.addEventListener('click',()=>show(slides.findIndex(x=>x.section===b.dataset.section))));}
-function next(){let fs=[...document.querySelectorAll('.frag')];if(reveal<fs.length){reveal++;fs[reveal-1].classList.add('revealed');$('prev').disabled=false;if(index===slides.length-1&&reveal===fs.length)$('next').disabled=true}else if(index<slides.length-1)show(index+1)}function prev(){let fs=[...document.querySelectorAll('.frag')];if(reveal>0){fs[--reveal].classList.remove('revealed');$('next').disabled=false;if(index===0&&reveal===0)$('prev').disabled=true}else if(index>0)show(index-1,'end')}
-function overview(){const o=$('overview');o.hidden=!o.hidden;if(!o.hidden){$('overview-grid').innerHTML=slides.map((s,i)=>`<button data-index="${i}" class="${index===i?'active':''}"><small>${String(i+1).padStart(2,'0')} · ${s.section}</small>${s.title.replace(/<[^>]+>/g,'')}</button>`).join('');$('overview-grid').querySelectorAll('button').forEach(b=>b.onclick=()=>{o.hidden=true;show(Number(b.dataset.index))})}}
-$('prev').onclick=prev;$('next').onclick=next;$('overview-btn').onclick=overview;$('close-over').onclick=overview;$('notes-btn').onclick=()=>$('notes').hidden=!$('notes').hidden;$('fullscreen-btn').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()};window.addEventListener('keydown',e=>{if(e.target.closest('button,a,input'))return;if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();next()}else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev()}else if(e.key.toLowerCase()==='n')$('notes').hidden=!$('notes').hidden;else if(e.key.toLowerCase()==='o')overview();else if(e.key.toLowerCase()==='f')$('fullscreen-btn').click();else if(e.key==='Escape')$('overview').hidden=true});window.addEventListener('hashchange',()=>{const n=parseInt(location.hash.slice(1),10);if(n>=1&&n<=slides.length&&n-1!==index)show(n-1)});show(index);
 
+let slides=[],index=0,reveal=0;
+const $=id=>document.getElementById(id);const stage=$('stage');
+function fit(){if(innerWidth<=700){stage.style.transform='none';return}const s=Math.min(innerWidth/1600,innerHeight/900);stage.style.transform=`translate(${(innerWidth-1600*s)/2}px,${(innerHeight-900*s)/2}px) scale(${s})`}
+window.addEventListener('resize',fit);fit();
 
+async function loadSlides(){
+  slides=await Promise.all(slideFiles.map(async file=>{
+    const res=await fetch('slides/'+file,{cache:'no-cache'});
+    if(!res.ok)throw new Error(file+' returned HTTP '+res.status);
+    const doc=new DOMParser().parseFromString(await res.text(),'text/html');
+    const root=doc.querySelector('.slide-data');
+    if(!root)throw new Error(file+' has no .slide-data section');
+    const title=root.querySelector('.slide-title'),kicker=root.querySelector('.slide-kicker'),body=root.querySelector('.body'),notes=root.querySelector('.slide-notes');
+    return{
+      section:root.dataset.section||'',
+      kind:root.dataset.kind||'',
+      kicker:kicker?kicker.textContent.trim():'',
+      title:title?title.innerHTML.trim():'',
+      body:body?body.outerHTML:'',
+      notes:notes?notes.innerHTML.trim():''
+    };
+  }));
+}
+
+function show(i,r=0){
+  index=Math.max(0,Math.min(slides.length-1,i));
+  const s=slides[index];
+  $('slides').innerHTML=`<section class="slide active ${['end','architecture'].includes(s.kind)?'serif-heading':''}"><header class="head"><span>${s.section}</span><nav class="nav" aria-label="Presentation sections">${sections.map(name=>`<button data-section="${name}" class="${name===s.section?'current':''}">${name}</button>`).join('')}</nav></header>${s.kind==='hero'?'':`<div class="eyebrow">${s.kicker}</div><h2 class="title">${s.title}</h2>`}${s.body}<footer class="foot"><a href="https://x.com/DeepSeekHarness/status/2116857257245987236" target="_blank" rel="noopener">DeepSeek Super Agent · Article</a><span>${index+1} / ${slides.length}</span></footer><div class="hint">← / → navigate · N notes · O overview · F full screen</div></section>`;
+  let fs=[...document.querySelectorAll('.frag')];
+  reveal=r==='end'?fs.length:Math.min(r,fs.length);
+  fs.forEach((f,j)=>f.classList.toggle('revealed',j<reveal));
+  $('prev').disabled=index===0&&reveal===0;
+  $('next').disabled=index===slides.length-1&&reveal===fs.length;
+  $('notes').innerHTML=`<b>${index+1} / ${slides.length}</b><p>${s.notes}</p>`;
+  history.replaceState(null,'','#'+(index+1));
+  document.querySelectorAll('[data-section]').forEach(b=>b.addEventListener('click',()=>show(slides.findIndex(x=>x.section===b.dataset.section))));
+}
+
+function next(){if(!slides.length)return;let fs=[...document.querySelectorAll('.frag')];if(reveal<fs.length){reveal++;fs[reveal-1].classList.add('revealed');$('prev').disabled=false;if(index===slides.length-1&&reveal===fs.length)$('next').disabled=true}else if(index<slides.length-1)show(index+1)}
+function prev(){if(!slides.length)return;let fs=[...document.querySelectorAll('.frag')];if(reveal>0){fs[--reveal].classList.remove('revealed');$('next').disabled=false;if(index===0&&reveal===0)$('prev').disabled=true}else if(index>0)show(index-1,'end')}
+function overview(){if(!slides.length)return;const o=$('overview');o.hidden=!o.hidden;if(!o.hidden){$('overview-grid').innerHTML=slides.map((s,i)=>`<button data-index="${i}" class="${index===i?'active':''}"><small>${String(i+1).padStart(2,'0')} · ${s.section}</small>${s.title.replace(/<[^>]+>/g,'')}</button>`).join('');$('overview-grid').querySelectorAll('button').forEach(b=>b.onclick=()=>{o.hidden=true;show(Number(b.dataset.index))})}}
+
+$('prev').onclick=prev;$('next').onclick=next;$('overview-btn').onclick=overview;$('close-over').onclick=overview;$('notes-btn').onclick=()=>$('notes').hidden=!$('notes').hidden;$('fullscreen-btn').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()};
+window.addEventListener('keydown',e=>{if(!slides.length||e.target.closest('button,a,input'))return;if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();next()}else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev()}else if(e.key.toLowerCase()==='n')$('notes').hidden=!$('notes').hidden;else if(e.key.toLowerCase()==='o')overview();else if(e.key.toLowerCase()==='f')$('fullscreen-btn').click();else if(e.key==='Escape')$('overview').hidden=true});
+window.addEventListener('hashchange',()=>{if(!slides.length)return;const n=parseInt(location.hash.slice(1),10);if(n>=1&&n<=slides.length&&n-1!==index)show(n-1)});
+
+async function boot(){
+  try{
+    await loadSlides();
+    const h=parseInt(location.hash.slice(1),10);
+    index=h>=1&&h<=slides.length?h-1:0;
+    show(index);
+  }catch(err){
+    console.error(err);
+    $('slides').innerHTML=`<div class="load-error"><h2>Could not load the slides</h2><p>${err.message}</p><p>If you opened this file directly, serve the folder over HTTP: <code>cd public &amp;&amp; python3 -m http.server</code>, then open <code>http://localhost:8000/</code>.</p></div>`;
+  }
+}
+boot();
 </script></body></html>

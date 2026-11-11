@@ -1,0 +1,7 @@
+<!-- Slide 12 of 25 · Design · Follow-ups reach the right worker. -->
+<section class="slide-data" data-section="Design" data-kind="flow">
+  <p class="slide-kicker">Subscriptions</p>
+  <h2 class="slide-title">Follow-ups reach the right worker.</h2>
+  <div class="body vertical"><div class="box-row"><div class="frag"><div class="box ">First event<small>Router assigns task</small></div></div><div class="arrow">→</div><div class="frag"><div class="box accent">Thread<small>Worker subscribes</small></div></div><div class="arrow">→</div><div class="frag"><div class="box ">Follow-up<small>Delivered directly</small></div></div></div></div>
+  <template class="slide-notes">The router can still observe events for continuity, but direct pass-through avoids a fresh forwarding decision. Subscriptions are many-to-many.</template>
+</section>
