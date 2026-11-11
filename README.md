@@ -1,30 +1,66 @@
 # Deekseek Super Agent
 
-An experimental project to learn from and implement the ideas in **“Exploring Super-agent Design: Towards a More Autonomous Agent System”** by the DeepSeek Harness team.
+A forkable learning project exploring the ideas in DeepSeek Harness’s [“Exploring Super-agent Design”](https://x.com/DeepSeekHarness/status/2116857257245987236). Start with one small, deterministic agent loop, then explore how the paper extends agent systems to concurrent workers and event-driven operation.
 
-The article describes an agent system that can maintain continuity across conversations, work on multiple tasks concurrently, respond to events, and recover from failures. This repository will explore those ideas through an independent implementation; it is not an official DeepSeek product.
+- **Start learning:** [Open the GitHub Pages lesson](https://jaganzutual.github.io/Deekseek-Super-Agent/) (available once Pages deployment succeeds).
+- **Run the demo:** [Set up and run the Python example](#run-the-demo).
+- **Fork and remix:** [Publish your own learning site](#fork-and-publish).
 
-## Project status
+This is an independent educational project, not an official DeepSeek product. The paper describes architectural ideas; the code here implements only a small teaching example, not the paper’s full super-agent.
 
-This project is in the learning and planning stage. There is no working agent, installation process, or runnable application yet. The article is available locally as `DeepSeek-Super-Agent.pdf`.
+## Run the demo
 
-## Architecture we want to explore
+Requirements: Python 3.9 or newer. No API key or Python packages are needed.
 
-- **Router and workers:** A coordinating router handles user interaction and task dispatch, while isolated workers execute individual tasks concurrently.
-- **Event-driven operation:** Incoming events are filtered and routed to the appropriate task. Thread subscriptions can deliver follow-up events directly to interested workers.
-- **Context and memory:** Short, relevant context is included when needed; larger information is stored externally and retrieved through links between events, threads, and tasks.
-- **Asynchronous interaction:** Long-running work runs in the background so the system can accept new instructions and respond to results as events.
-- **Persistent state and execution environments:** Agent state can survive process restarts, while execution environments are separated from the agent's coordination logic.
-- **Watchdog:** An independent control loop monitors failures and task progress and helps the system recover.
+```bash
+python3 learn/examples/agent.py
+```
 
-These are goals derived from the article, not features already implemented here. Security, privacy, long-term memory, and coordination across trust boundaries remain important design questions.
+The scripted model asks the dispatcher to read a fixed local note. The agent loop adds the returned text to its in-memory history and calls the model again. The model then returns a final answer. It simply prefixes the note with `Summary:`; it does not perform real language-model summarization.
 
-## Intended direction
+Example final output:
 
-We plan to study the paper in depth, choose a small end-to-end use case, and build the architecture incrementally. Early work will focus on the router, isolated task execution, event routing, and persistent state before extending the system to more channels or environments.
+```text
+Summary: The project explores how an agent can use tools to answer questions.
+```
 
-## Reference
+Run the focused checks with `python3 -m unittest discover -s tests -v`. To experiment, edit `learn/examples/project_note.txt`, predict what the model will receive, and rerun the demo.
 
-DeepSeek Harness, **“Exploring Super-agent Design: Towards a More Autonomous Agent System.”** The local PDF is a machine translation of the original Chinese article. The article describes architectural ideas and notes that its prototype is not an official DeepSeek product.
+## Preview and edit the lessons
 
-[Read the original article on X](https://x.com/DeepSeekHarness/status/2116857257245987236).
+Requirements: Node.js 22 and npm, plus Python 3.9 or newer.
+
+```bash
+npm ci
+npm run trace
+npm run dev
+```
+
+Open the address printed by Slidev. The deck has three screens; arrow keys navigate between screens, and the walkthrough has its own buttons. Speaker notes are included in the Markdown. Build the static site with:
+
+```bash
+npm run build
+```
+
+- Edit lesson content and speaker notes in [`learn/slides.md`](learn/slides.md).
+- Edit the interactive walkthrough in [`learn/components/Walkthrough.vue`](learn/components/Walkthrough.vue), the component diagram in [`learn/components/Boundaries.vue`](learn/components/Boundaries.vue), and visual styles in [`learn/style.css`](learn/style.css).
+- Change the demo in [`learn/examples/agent.py`](learn/examples/agent.py) and its note in [`learn/examples/project_note.txt`](learn/examples/project_note.txt).
+- `npm run trace` regenerates [`learn/public/trace.json`](learn/public/trace.json) from the Python run. The production build regenerates it automatically. Commit updated trace data when changing the demo or note.
+- Read [`ARCHITECTURE.md`](ARCHITECTURE.md) for the larger proposed system. It is a design discussion, not a list of implemented features.
+
+## Fork and publish
+
+1. Fork this repository on GitHub.
+2. Enable Actions in the fork if GitHub prompts you.
+3. In the fork, open **Settings → Pages** and choose **GitHub Actions** as the source.
+4. Run **Deploy learning site** from the Actions tab, or push to your fork’s default branch.
+5. Open the Pages URL reported by the deployment. A project site normally uses `https://<owner>.github.io/<repository>/`.
+6. Edit a lesson or the project note, rerun the demo and `npm run trace`, and push to update your site.
+
+The workflow derives the Pages base path from the deployment configuration and source links from the repository running the workflow. A fork deploys to its own Pages site and links to its own code. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for how to contribute changes.
+
+## Source and attribution
+
+The architecture is inspired by DeepSeek Harness, [“Exploring Super-agent Design: Towards a More Autonomous Agent System”](https://x.com/DeepSeekHarness/status/2116857257245987236), particularly sections 2–4. The included [`DeepSeek-Super-Agent.pdf`](DeepSeek-Super-Agent.pdf) is a machine translation of the original Chinese article. The article’s router, concurrent workers, event subscriptions, persistent state, and watchdog are broader than the single local loop demonstrated here.
+
+This repository currently has **no license**. MIT is a reasonable choice for original project code and learning materials, subject to the owner’s decision. The article and third-party dependencies retain their own rights and licenses.
