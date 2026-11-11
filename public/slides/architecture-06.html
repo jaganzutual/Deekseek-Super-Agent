@@ -1,7 +1,0 @@
-<!-- Slide 06 of 25 · Design · The architecture on one page. -->
-<section class="slide-data" data-section="Design" data-kind="architecture">
-  <p class="slide-kicker">The whole design</p>
-  <h2 class="slide-title">The architecture on <em>one page.</em></h2>
-  <div class="body vertical"><div class="architecture"><div class="stack"><div class="archbox">Chat</div><div class="archbox">GitHub</div><div class="archbox">Email & events</div></div><div class="archbox">Two-stage filter<small>rules, then model judgment</small></div><div class="archbox peach">Router<small>coordinates and communicates</small></div><div class="stack"><div class="archbox sage">Worker 1<small>isolated task</small></div><div class="archbox sage">Worker 2<small>isolated task</small></div><div class="archbox sage">Worker 3<small>isolated task</small></div></div></div><div class="arch-tail"><div class="archbox">Persistent state<small>sessions, tasks, events</small></div><div class="archbox">Execution environments<small>tools and machines</small></div><div class="archbox">Watchdog<small>health and progress</small></div></div><p class="point" style="font-size:19px;margin-top:18px">Subscribed follow-ups can go directly to workers; the router retains global awareness.</p></div>
-  <template class="slide-notes">Walk from channels to filtering, then the router and workers. Explain direct follow-up delivery, persistent state, execution environments, and the independent watchdog.</template>
-</section>

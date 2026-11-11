@@ -1,7 +1,0 @@
-<!-- Slide 18 of 25 · Running · A long job should not block a conversation. -->
-<section class="slide-data" data-section="Running" data-kind="flow">
-  <p class="slide-kicker">Full duplex</p>
-  <h2 class="slide-title">A long job should not block a conversation.</h2>
-  <div class="body vertical"><div class="box-row"><div class="frag"><div class="box ">start()<small>Returns immediately</small></div></div><div class="arrow">→</div><div class="frag"><div class="box accent">Keep talking<small>Accept new input</small></div></div><div class="arrow">→</div><div class="frag"><div class="box ">Result event<small>Arrives later</small></div></div></div></div>
-  <template class="slide-notes">New input is processed after the current inference step finishes, rather than waiting for the background operation.</template>
-</section>

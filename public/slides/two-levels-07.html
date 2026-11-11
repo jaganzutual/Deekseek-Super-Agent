@@ -1,7 +1,0 @@
-<!-- Slide 07 of 25 · Design · One coordinator, many workers. -->
-<section class="slide-data" data-section="Design" data-kind="columns">
-  <p class="slide-kicker">Two levels</p>
-  <h2 class="slide-title">One coordinator, many workers.</h2>
-  <div class="body columns"><div class="frag"><div><p class="point"><strong>Router.</strong><br>Maintains the global picture, talks to people, and dispatches tasks.</p></div></div><div class="frag"><div><p class="point"><strong>Workers.</strong><br>Each focuses on one task in an isolated context and reports its result.</p></div></div><div class="frag"><div><p class="point"><strong>Why split?.</strong><br>Continuity and parallel work no longer compete inside one task session.</p></div></div></div>
-  <template class="slide-notes">The article says the router does not execute tasks itself. It may still use coordination and recall tools.</template>
-</section>
