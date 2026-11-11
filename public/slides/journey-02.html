@@ -5,16 +5,16 @@
   <div class="body vertical"><div class="table-scroll"><table class="summary-table">
     <thead><tr><th>Topic</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td>The problem</td><td>One session per task mixes contexts and caps a person at 3 to 5 parallel tasks</td></tr>
-      <tr><td>The Router and Workers</td><td>One long-lived Router talks and dispatches; isolated Workers execute one task each</td></tr>
-      <tr><td>Event filtering</td><td>Deterministic code screens most noise; only ambiguous events reach the model</td></tr>
-      <tr><td>Threads and pass-through</td><td>Workers subscribe to a Thread, so follow-ups bypass the Router and arrive directly</td></tr>
-      <tr><td>Inline &amp; Spill</td><td>Treat context as a cache: inline what is needed soon, spill the rest behind a pointer</td></tr>
-      <tr><td>Chain of Recall</td><td>Linked object IDs let the model recall context hop by hop instead of searching</td></tr>
-      <tr><td>Never blocking</td><td>Async start() returns at once, so new messages are handled while tools keep running</td></tr>
-      <tr><td>Staying online</td><td>Stateless cloud compute, state in a database, and tools reached where they live</td></tr>
-      <tr><td>Preliminary experiments</td><td>Synthetic runs: 12.4 min median and 15.7 min p95, versus 20.4/29.5 single-session</td></tr>
+      <tr><td>The problem</td><td>Today's agents handle one task at a time, so a person can follow only 3 to 5</td></tr>
+      <tr><td>The Router and Workers</td><td>One assistant talks to you and hands each job to a separate helper</td></tr>
+      <tr><td>Event filtering</td><td>Cheap rules drop most messages; the AI looks only at the ones that matter</td></tr>
+      <tr><td>Threads and pass-through</td><td>Once a helper owns a conversation, new replies go straight to it</td></tr>
+      <tr><td>Inline &amp; Spill</td><td>Keep short, useful details in working memory; park long ones for later</td></tr>
+      <tr><td>Chain of Recall</td><td>Follow links from one item to the next to recall old work, instead of searching</td></tr>
+      <tr><td>Never blocking</td><td>The assistant replies right away while long jobs run in the background</td></tr>
+      <tr><td>Staying online</td><td>It runs in the cloud, saves state in a database, and uses your tools on demand</td></tr>
+      <tr><td>Preliminary experiments</td><td>Simulated tests finished tasks in roughly 12–16 minutes, faster than a single chat</td></tr>
     </tbody>
   </table></div></div>
-  <template class="slide-notes">Set expectations: this deck explains concepts from the article, moving from the problem to the architecture and its limits.</template>
+  <template class="slide-notes">Set expectations: this deck explains concepts from the article, moving from the problem to the architecture and its limits. The experiments use synthetic workloads and a simulated coding tool, so they measure scheduling and coordination, not real coding quality.</template>
 </section>
