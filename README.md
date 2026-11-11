@@ -26,3 +26,5 @@ We plan to study the paper in depth, choose a small end-to-end use case, and bui
 ## Reference
 
 DeepSeek Harness, **“Exploring Super-agent Design: Towards a More Autonomous Agent System.”** The local PDF is a machine translation of the original Chinese article. The article describes architectural ideas and notes that its prototype is not an official DeepSeek product.
+
+[Read the original article on X](https://x.com/DeepSeekHarness/status/2116857257245987236).
