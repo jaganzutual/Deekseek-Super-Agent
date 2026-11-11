@@ -43,6 +43,16 @@
 .archbox.peach{background:var(--ds-blue-deep);border-color:var(--ds-blue-deep);color:#fff}
 .archbox.peach small{color:#DCE4FF}
 @media(max-width:700px){.foot{bottom:74px}}
+.table-scroll{width:100%;overflow-x:auto}
+.summary-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;font:17px/1.35 var(--sans);table-layout:fixed}
+.summary-table th{font:11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:11px 16px;background:var(--light);border-bottom:1px solid var(--line)}
+.summary-table td{padding:10px 16px;border-bottom:1px solid var(--line);color:var(--body);vertical-align:top}
+.summary-table tbody tr:last-child td{border-bottom:0}
+.summary-table td:first-child{color:var(--ink);font-weight:600}
+.summary-table td:last-child{color:var(--muted)}
+.summary-table th:nth-child(1),.summary-table td:nth-child(1){width:30%}
+.summary-table th:nth-child(2),.summary-table td:nth-child(2){width:70%}
+@media(max-width:700px){.summary-table{min-width:620px;font-size:13px}}
 </style></head><body><main id="stage"><div id="slides"><p class="loading">Loading slides…</p></div><div class="controls"><button id="prev" aria-label="Previous step">← Back</button><button id="next" aria-label="Next step">Next →</button><button id="overview-btn">Overview</button><button id="notes-btn">Notes</button><button id="fullscreen-btn">Full screen</button></div><div id="notes" class="notes" hidden></div><div id="overview" class="overview" hidden><h2>Explore the deck</h2><button class="close-over" id="close-over">Close</button><div class="overview-grid" id="overview-grid"></div></div></main>
 <script>
 const sections=['Start','Design','Context','Running','Next'];
@@ -74,7 +84,7 @@ const slideFiles=[
 'takeaway-25.html'
 ];
 
-let slides=[],index=0,reveal=0;
+let slides=[],index=0;
 const $=id=>document.getElementById(id);const stage=$('stage');
 function fit(){if(innerWidth<=700){stage.style.transform='none';return}const s=Math.min(innerWidth/1600,innerHeight/900);stage.style.transform=`translate(${(innerWidth-1600*s)/2}px,${(innerHeight-900*s)/2}px) scale(${s})`}
 window.addEventListener('resize',fit);fit();
@@ -98,22 +108,20 @@ async function loadSlides(){
   }));
 }
 
-function show(i,r=0){
+function show(i){
   index=Math.max(0,Math.min(slides.length-1,i));
   const s=slides[index];
   $('slides').innerHTML=`<section class="slide active ${['end','architecture'].includes(s.kind)?'serif-heading':''}"><header class="head"><span>${s.section}</span><nav class="nav" aria-label="Presentation sections">${sections.map(name=>`<button data-section="${name}" class="${name===s.section?'current':''}">${name}</button>`).join('')}</nav></header>${s.kind==='hero'?'':`<div class="eyebrow">${s.kicker}</div><h2 class="title">${s.title}</h2>`}${s.body}<footer class="foot"><a href="https://x.com/DeepSeekHarness/status/2116857257245987236" target="_blank" rel="noopener">DeepSeek Super Agent · Article</a><span>${index+1} / ${slides.length}</span></footer><div class="hint">← / → navigate · N notes · O overview · F full screen</div></section>`;
-  let fs=[...document.querySelectorAll('.frag')];
-  reveal=r==='end'?fs.length:Math.min(r,fs.length);
-  fs.forEach((f,j)=>f.classList.toggle('revealed',j<reveal));
-  $('prev').disabled=index===0&&reveal===0;
-  $('next').disabled=index===slides.length-1&&reveal===fs.length;
+  [...document.querySelectorAll('.frag')].forEach(f=>f.classList.add('revealed'));
+  $('prev').disabled=index===0;
+  $('next').disabled=index===slides.length-1;
   $('notes').innerHTML=`<b>${index+1} / ${slides.length}</b><p>${s.notes}</p>`;
   history.replaceState(null,'','#'+(index+1));
   document.querySelectorAll('[data-section]').forEach(b=>b.addEventListener('click',()=>show(slides.findIndex(x=>x.section===b.dataset.section))));
 }
 
-function next(){if(!slides.length)return;let fs=[...document.querySelectorAll('.frag')];if(reveal<fs.length){reveal++;fs[reveal-1].classList.add('revealed');$('prev').disabled=false;if(index===slides.length-1&&reveal===fs.length)$('next').disabled=true}else if(index<slides.length-1)show(index+1)}
-function prev(){if(!slides.length)return;let fs=[...document.querySelectorAll('.frag')];if(reveal>0){fs[--reveal].classList.remove('revealed');$('next').disabled=false;if(index===0&&reveal===0)$('prev').disabled=true}else if(index>0)show(index-1,'end')}
+function next(){if(!slides.length)return;if(index<slides.length-1)show(index+1)}
+function prev(){if(!slides.length)return;if(index>0)show(index-1)}
 function overview(){if(!slides.length)return;const o=$('overview');o.hidden=!o.hidden;if(!o.hidden){$('overview-grid').innerHTML=slides.map((s,i)=>`<button data-index="${i}" class="${index===i?'active':''}"><small>${String(i+1).padStart(2,'0')} · ${s.section}</small>${s.title.replace(/<[^>]+>/g,'')}</button>`).join('');$('overview-grid').querySelectorAll('button').forEach(b=>b.onclick=()=>{o.hidden=true;show(Number(b.dataset.index))})}}
 
 $('prev').onclick=prev;$('next').onclick=next;$('overview-btn').onclick=overview;$('close-over').onclick=overview;$('notes-btn').onclick=()=>$('notes').hidden=!$('notes').hidden;$('fullscreen-btn').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()};

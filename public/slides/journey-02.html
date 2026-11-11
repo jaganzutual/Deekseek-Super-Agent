@@ -1,7 +1,20 @@
-<!-- Slide 02 of 25 · Start · A systems approach to agents -->
-<section class="slide-data" data-section="Start" data-kind="rows">
+<!-- Slide 02 of 25 · Start · Index -->
+<section class="slide-data" data-section="Start" data-kind="table">
   <p class="slide-kicker">The journey</p>
-  <h2 class="slide-title">A systems approach to agents</h2>
-  <div class="body vertical"><div class="rows"><div class="frag"><div class="row"><strong>The problem</strong><span>Many sessions compete for human attention.</span></div></div><div class="frag"><div class="row"><strong>The design</strong><span>A router coordinates isolated workers.</span></div></div><div class="frag"><div class="row"><strong>The memory</strong><span>Events, threads, context, and recall.</span></div></div><div class="frag"><div class="row"><strong>The runtime</strong><span>Asynchronous work, persistent state, and recovery.</span></div></div><div class="frag"><div class="row"><strong>The open questions</strong><span>Security, scale, and user control.</span></div></div></div></div>
+  <h2 class="slide-title">Index</h2>
+  <div class="body vertical"><div class="table-scroll"><table class="summary-table">
+    <thead><tr><th>Topic</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>The problem</td><td>Why agents feel limited: you can follow 3 to 5 sessions</td></tr>
+      <tr><td>The Router and Workers</td><td>One voice for people, many Workers behind it</td></tr>
+      <tr><td>Event filtering</td><td>Code first, a model only when needed</td></tr>
+      <tr><td>Threads and pass-through</td><td>Follow-ups skip the Router</td></tr>
+      <tr><td>Inline &amp; Spill</td><td>Treat the context window as a cache</td></tr>
+      <tr><td>Chain of Recall</td><td>Follow IDs, do not search</td></tr>
+      <tr><td>Never blocking</td><td>A long job does not stop the conversation</td></tr>
+      <tr><td>Staying online</td><td>Stateless loop, sessions in a database</td></tr>
+      <tr><td>Live demo</td><td>Our own agent, on Telegram, and you steer it</td></tr>
+    </tbody>
+  </table></div></div>
   <template class="slide-notes">Set expectations: this deck explains concepts from the article, moving from the problem to the architecture and its limits.</template>
 </section>
