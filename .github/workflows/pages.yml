@@ -1,4 +1,4 @@
-name: Deploy learning site
+name: Deploy presentation
 on:
   push:
     branches: ['**']
@@ -11,33 +11,17 @@ concurrency:
   group: pages
   cancel-in-progress: false
 jobs:
-  build:
+  deploy:
     if: github.event_name == 'workflow_dispatch' || github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
       - uses: actions/configure-pages@v5
-        id: pages
-      - run: npm ci
-      - name: Build lessons
-        env:
-          VITE_GITHUB_REPOSITORY: ${{ github.repository }}
-          VITE_GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-          PAGES_BASE: ${{ steps.pages.outputs.base_path }}
-        run: npm run build -- --base "${PAGES_BASE%/}/"
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
-  deploy:
-    needs: build
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - id: deployment
+          path: public
+      - id: deploy
         uses: actions/deploy-pages@v4
