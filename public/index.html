@@ -53,6 +53,9 @@
 .summary-table th:nth-child(1),.summary-table td:nth-child(1){width:30%}
 .summary-table th:nth-child(2),.summary-table td:nth-child(2){width:70%}
 @media(max-width:700px){.summary-table{min-width:620px;font-size:13px}}
+.source-link{margin:26px 0 0}
+.source-link a{font:14px var(--mono);color:var(--ds-blue-deep);text-decoration:none;border-bottom:1px solid var(--ds-blue-mid);padding-bottom:3px}
+.source-link a:hover{border-bottom-color:var(--ds-blue-deep)}
 </style></head><body><main id="stage"><div id="slides"><p class="loading">Loading slides…</p></div><div class="controls"><button id="prev" aria-label="Previous step">← Back</button><button id="next" aria-label="Next step">Next →</button><button id="overview-btn">Overview</button><button id="notes-btn">Notes</button><button id="fullscreen-btn">Full screen</button></div><div id="notes" class="notes" hidden></div><div id="overview" class="overview" hidden><h2>Explore the deck</h2><button class="close-over" id="close-over">Close</button><div class="overview-grid" id="overview-grid"></div></div></main>
 <script>
 const sections=['Start','Design','Context','Running','Next'];
