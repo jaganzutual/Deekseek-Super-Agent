@@ -5,15 +5,15 @@
   <div class="body vertical"><div class="table-scroll"><table class="summary-table">
     <thead><tr><th>Topic</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td>The problem</td><td>Why agents feel limited: you can follow 3 to 5 sessions</td></tr>
-      <tr><td>The Router and Workers</td><td>One voice for people, many Workers behind it</td></tr>
-      <tr><td>Event filtering</td><td>Code first, a model only when needed</td></tr>
-      <tr><td>Threads and pass-through</td><td>Follow-ups skip the Router</td></tr>
-      <tr><td>Inline &amp; Spill</td><td>Treat the context window as a cache</td></tr>
-      <tr><td>Chain of Recall</td><td>Follow IDs, do not search</td></tr>
-      <tr><td>Never blocking</td><td>A long job does not stop the conversation</td></tr>
-      <tr><td>Staying online</td><td>Stateless loop, sessions in a database</td></tr>
-      <tr><td>Live demo</td><td>Our own agent, on Telegram, and you steer it</td></tr>
+      <tr><td>The problem</td><td>Why agents feel limited: a person can follow only 3 to 5 active sessions</td></tr>
+      <tr><td>The Router and Workers</td><td>One voice for people, with many Workers running behind it in isolation</td></tr>
+      <tr><td>Event filtering</td><td>Code handles the obvious cases; a model judges only what needs interpretation</td></tr>
+      <tr><td>Threads and pass-through</td><td>Follow-ups in a thread go straight to the Worker, skipping the Router</td></tr>
+      <tr><td>Inline &amp; Spill</td><td>Treat the context window as a cache: inline what is needed, spill the rest</td></tr>
+      <tr><td>Chain of Recall</td><td>Follow object IDs and links instead of searching; recall along references</td></tr>
+      <tr><td>Never blocking</td><td>A long-running job never blocks the conversation; new input is still accepted</td></tr>
+      <tr><td>Staying online</td><td>A stateless agent loop with sessions stored in a database stays online</td></tr>
+      <tr><td>Live demo</td><td>Our own agent, reachable on Telegram, steered by you in real time</td></tr>
     </tbody>
   </table></div></div>
   <template class="slide-notes">Set expectations: this deck explains concepts from the article, moving from the problem to the architecture and its limits.</template>
